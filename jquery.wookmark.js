@@ -16,7 +16,8 @@ $.fn.wookmark = function(options) {
         offset: 2,
         autoResize: false,
         itemWidth: $(this[0]).outerWidth(),
-        resizeDelay: 50
+        resizeDelay: 50,
+        appendToShortest: true
       }, options);
   } else if(options) {
     this.wookmarkOptions = $.extend(this.wookmarkOptions, options);
@@ -69,13 +70,16 @@ $.fn.wookmark = function(options) {
     for(; i<length; i++ ) {
       item = $(this[i]);
       
-      // Find the shortest column.
-      shortest = null;
-      shortestIndex = 0;
-      for(k=0; k<columns; k++) {
-        if(shortest == null || heights[k] < shortest) {
-          shortest = heights[k];
-          shortestIndex = k;
+      shortestIndex = ((i == 0) ? 0 : (i % columns));
+      shortest = heights[shortestIndex];
+      
+      if (this.wookmarkOptions.appendToShortest) {
+        // Find the shortest column.
+        for(k=0; k<columns; k++) {
+          if(shortest == null || heights[k] < shortest) {
+            shortest = heights[k];
+            shortestIndex = k;
+          }
         }
       }
       
